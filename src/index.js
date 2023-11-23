@@ -9,7 +9,8 @@ const searchForm = document.querySelector('.search-form'),
 const PER_PAGE = 40;
 let per_page = PER_PAGE,
   totalPages = 1,
-  endreached = false;
+  endreached = false,
+  lightbox;
 const apiService = new ApiService();
 
 function onSearch(element) {
@@ -50,6 +51,15 @@ async function fetchGallery() {
     Notify.success(`Hooray! We found ${total} images !!!`);
   }
   displayImages(hits);
+  if (apiService.page === 2) {
+    lightbox = new SimpleLightbox('.gallery a', {
+      captions: true,
+      captionsData: 'alt',
+      captionDelay: 250,
+    });
+  } else {
+    lightbox.refresh();
+  }
 }
 
 function displayImages(images) {
@@ -79,11 +89,7 @@ function displayImages(images) {
     )
     .join('');
   galleryContainer.insertAdjacentHTML('beforeend', markup);
-  let lightbox = new SimpleLightbox('.gallery a', {
-    captions: true,
-    captionsData: 'alt',
-    captionDelay: 250,
-  });
+
   if (apiService.page > totalPages) {
     scrollTopBtn.style.display = 'block';
   }
